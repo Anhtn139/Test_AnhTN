@@ -3,7 +3,7 @@
 ---
 
 ## Mục lục
-
+- [Sơ đồ](#Sơ-đồ)
 - [Tài liệu sản phẩm (Product)](#tài-liệu-sản-phẩm-product)
 - [Kiến trúc phần mềm (Logical)](#kiến-trúc-phần-mềm-logical)
 - [Kiến trúc triển khai (Physical)](#kiến-trúc-triển-khai-physical)
@@ -14,9 +14,20 @@
   - [Gameplay Ability](#4-gameplay-ability)
   - [Gameplay Tag](#5-gameplay-tag)
 - [Luồng & sequence](#luồng--sequence)
-- [Technical decision log](#nhật-ký-quyết-định-kỹ-thuật-technical-decision-log)
+- [Technical decision log](#technical-decision-log)
 
 ---
+
+## Sơ đồ
+
+### Class Diagram
+
+![Class Diagram](https://drive.google.com/uc?id=1azAKCG9Et7lbwXpeSL98P6rAKoP8Cckx)
+
+### Game System Diagram
+
+![Game System Diagram](https://drive.google.com/uc?id=1THtrqlyo8IRhUVmoJ0It9SB_gG5SFWtZ)
+
 
 ## Tài liệu sản phẩm (Product)
 
