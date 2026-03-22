@@ -1,0 +1,110 @@
+# Unreal Engine — project build outputs & caches
+# (Dựa trên template GitHub UnrealEngine + bổ sung cho UE5 / IDE / OS)
+
+# Visual Studio / MSBuild
+.vs/
+*.VC.db
+*.VC.db-shm
+*.VC.db-wal
+*.VC.opendb
+*.opensdf
+*.sdf
+.vsconfig
+
+# JetBrains Rider
+.idea/
+
+# Compiled Object files
+*.slo
+*.lo
+*.o
+*.obj
+
+# Precompiled Headers
+*.gch
+*.pch
+
+# Compiled Dynamic libraries
+*.so
+*.dylib
+*.dll
+
+# Fortran module files
+*.mod
+
+# Compiled Static libraries
+*.lai
+*.la
+*.a
+*.lib
+
+# Executables
+*.exe
+*.out
+*.app
+*.ipa
+
+# Project files có thể generate lại từ UProject
+*.xcodeproj
+*.xcworkspace
+*.sln
+*.suo
+
+# Precompiled Assets (source art — giữ nếu cần track thì bỏ comment)
+SourceArt/**/*.png
+SourceArt/**/*.tga
+
+# Binary & build
+Binaries/
+Plugins/**/Binaries/
+
+Build/
+# Cho phép PakBlacklist theo cấu hình build + icon
+!Build/*/
+Build/*/**
+!Build/*/PakBlacklist*.txt
+!Build/**/*.ico
+
+# Dữ liệu build sẵn cho map (lighting, navigation…)
+*_BuiltData.uasset
+
+# Editor: config cục bộ, log, autosave, crash
+Saved/
+
+# Compile trung gian
+Intermediate/
+Plugins/**/Intermediate/
+
+# Cache shader / DDC
+DerivedDataCache/
+
+# Báo cáo crash (UE5)
+Crashes/
+
+# Python (automation / editor scripts)
+__pycache__/
+*.py[cod]
+*$py.class
+
+# File tạm editor / OS
+*.swp
+*.bak
+*.tmp
+*.temp
+*.log
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# Linux
+*~
+.directory
