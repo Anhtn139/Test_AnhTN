@@ -1,8 +1,5 @@
 # Tài liệu kỹ thuật — GAS (CombatSystem)
 
-**Demo:** [YouTube](https://youtu.be/ekGjJGo_4mA?si=BcoEgjusbbuINZid)  
-**Repo:** *(điền link nếu có)*
-
 ---
 
 ## Mục lục
@@ -17,8 +14,7 @@
   - [Gameplay Ability](#4-gameplay-ability)
   - [Gameplay Tag](#5-gameplay-tag)
 - [Luồng & sequence](#luồng--sequence)
-- [Nhật ký quyết định kỹ thuật (Technical decision log)](#nhật-ký-quyết-định-kỹ-thuật-technical-decision-log)
-- [Ghi chú code / dự án](#ghi-chú-code--dự-án)
+- [Technical decision log](#nhật-ký-quyết-định-kỹ-thuật-technical-decision-log)
 
 ---
 
@@ -118,10 +114,8 @@ Là **số liệu** (thường float) GAS đọc/ghi. Trong dự án dùng một
 **Trong dự án:**
 
 - `Data.Damage.Scale` — SetByCaller cho scale từng đòn.
-- `State.PerfectDodgeWindow`, `State.ParryWindow` — cửa sổ phòng thủ.
+- `State.PerfectDodgeWindow`, `State.ParryWindow` — counter window.
 - `State.Stunned` — enemy (hoặc actor) khi đủ stun.
-
-Đăng ký tại **Project Settings → Gameplay Tags**.
 
 ---
 
@@ -175,12 +169,3 @@ sequenceDiagram
 | Cửa sổ phòng thủ bằng **GE + Granted Tag** | Dễ kiểm tra trong hit resolve; tách khỏi damage pipeline nếu cần. |
 
 ---
-
-## Ghi chú code / dự án
-
-- **Entry point** GAS trên pawn: **ASC** + **InitAbilityActorInfo** khi possess (pattern chuẩn Unreal).
-- **Convention:** tên class `UGameplayEffect`, tag trong Project Settings; tránh duplicate Health modifier trên GE damage.
-
----
-
-*Tài liệu định hướng; số cụ thể và công thức nằm trong code và asset trong project.*
