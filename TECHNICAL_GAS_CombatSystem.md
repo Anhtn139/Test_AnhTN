@@ -3,7 +3,7 @@
 ---
 
 ## Mục lục
-- [Sơ đồ](#Sơ-đồ)
+- [Sơ đồ](#sơ-đồ)
 - [Tài liệu sản phẩm (Product)](#tài-liệu-sản-phẩm-product)
 - [Kiến trúc phần mềm (Logical)](#kiến-trúc-phần-mềm-logical)
 - [Kiến trúc triển khai (Physical)](#kiến-trúc-triển-khai-physical)
@@ -33,22 +33,22 @@
 
 **Yêu cầu nghiệp vụ (tóm tắt):**
 
-- **Player:** combo làm tăng damage; dodge, perfect dodge, parry; có thể phản đòn khi đúng cửa sổ.
-- **Enemy:** nhận damage; thanh **Stun** — đủ ngưỡng → trạng thái choáng / stun lock.
-- **Damage:** tính qua GAS (không chỉ trừ float tay); có scale từng đòn và combo (theo spec design).
+- **Player:** combo increases damage; dodge, perfect dodge, parry; can counter when within counter window.
+- **Enemy:** receives damage; **Stun** bar — reaches threshold → stunned state / stun lock.
+- **Damage:** calculated via GAS (not manual float subtraction); per-hit and combo scaling (per spec design).
 
 **Use case (mức cao):**
 
 | Actor | Hành vi chính |
 |-------|----------------|
-| Player | Đánh → apply GE damage; dodge/parry → GE cấp tag cửa sổ. |
-| Enemy | Attack → nếu hit player, kiểm tra tag trên player ASC → kích hoạt Perfect Dodge / Parry. |
+| Player | Attack → apply GE damage; dodge/parry → GE grants counter window tag. |
+| Enemy | Attack → if hits player, check tag on player ASC → activate Perfect Dodge / Parry. |
 
 ---
 
 ## Kiến trúc phần mềm (Logical)
 
-**Luồng khái niệm:** mọi nhân vật combat dùng chung một **base character** có **ASC** + **Attribute Set**; damage đi qua **Gameplay Effect** + **Execution Calculation**; phòng thủ dùng **GE duration** + **Gameplay Tag** + **Gameplay Ability**.
+**Luồng khái niệm:** all combat characters share a **base character** with **ASC** + **Attribute Set**; damage goes through **Gameplay Effect** + **Execution Calculation**; defense uses **GE duration** + **Gameplay Tag** + **Gameplay Ability**.
 
 ```mermaid
 flowchart TB
@@ -62,7 +62,7 @@ flowchart TB
   Ability[Gameplay Ability] --> ASC
 ```
 
-**Player** và **Enemy** kế thừa cùng base; khác **grant ability**, AI, input.
+**Player** và **Enemy** kế thừa cùng base; khác **granted abilities**, AI, input.
 
 ---
 
@@ -70,7 +70,7 @@ flowchart TB
 
 - **Engine:** Unreal Engine 5, module **Gameplay Abilities** (GAS).
 - **Code:** C++ cho base character, attribute set, execution damage; Blueprint cho ability cụ thể, montage, asset GE.
-- **Không có database** runtime cho combat GAS — trạng thái nằm trên **ASC** + **replication** attribute khi cần multiplayer.
+- **Không có database** runtime cho GAS combat — trạng thái nằm trên **ASC** + attribute **replication** khi cần multiplayer.
 
 ---
 
@@ -81,12 +81,12 @@ flowchart TB
 Là **số liệu** (thường float) GAS đọc/ghi. Trong dự án dùng một **Attribute Set** chung, gắn ASC.
 
 | Khái niệm | Vai trò trong thiết kế |
-|-----------|-------------------------|
-| Health / MaxHealth | Nhận damage (trừ máu). |
+|-----------|------------------------|
+| Health / MaxHealth | Nhận damage (HP reduction). |
 | Stamina | Tài nguyên cho dodge / skill (GE cost hoặc ability cost). |
-| Combo | Chuỗi đánh — chủ yếu **player**, nhân vào damage (theo spec). |
-| BaseDamage | Damage gốc mỗi hit — đọc từ attacker khi tính damage. |
-| Stun | Thanh posture — **enemy**; đủ ngưỡng → stun. |
+| Combo | Combo string — chủ yếu **player**; nhân vào damage (theo spec). |
+| BaseDamage | Base damage mỗi hit — đọc từ attacker khi tính damage. |
+| Stun | Posture bar — **enemy**; reaches threshold → stun. |
 
 ---
 
@@ -97,7 +97,7 @@ Là **số liệu** (thường float) GAS đọc/ghi. Trong dự án dùng một
 **Trong dự án:**
 
 - **GE damage (instant):** dùng **Execution Calculation** để tính một lần — **không** chồng modifier Health trùng kiểu khác (tránh double damage).
-- **GE window (duration):** perfect dodge / parry — **Granted Tag** lên player trong vài giây.
+- **GE window (duration):** perfect dodge / parry — **Granted Tag** lên player trong vài giây (counter window).
 - GE khác: cost stamina, buff, v.v.
 
 ---
@@ -106,7 +106,7 @@ Là **số liệu** (thường float) GAS đọc/ghi. Trong dự án dùng một
 
 **Class tính toán** khi GE có **Execution** — dùng cho damage có combo / scale.
 
-**Trong dự án:** đọc **BaseDamage**, **Combo** từ Attribute Set của **source**; nhân **Scale** từ **SetByCaller** (tag ví dụ `Data.Damage.Scale`); output trừ **Health** của **target**.
+**Trong dự án:** đọc **BaseDamage**, **Combo** từ Attribute Set **source**; nhân **Scale** từ **SetByCaller** (tag ví dụ `Data.Damage.Scale`); output trừ **Health** của **target**.
 
 ---
 
@@ -124,9 +124,9 @@ Là **số liệu** (thường float) GAS đọc/ghi. Trong dự án dùng một
 
 **Trong dự án:**
 
-- `Data.Damage.Scale` — SetByCaller cho scale từng đòn.
+- `Data.Damage.Scale` — SetByCaller cho per-hit scale.
 - `State.PerfectDodgeWindow`, `State.ParryWindow` — counter window.
-- `State.Stunned` — enemy (hoặc actor) khi đủ stun.
+- `State.Stunned` — enemy (hoặc actor) khi stun threshold reached.
 
 ---
 
@@ -143,11 +143,11 @@ Build **spec** **GE damage** → apply lên ASC **target** → **Execution Calcu
 **Khi resolve hit (enemy → player):**
 
 1. Kiểm tra ASC player có **`State.PerfectDodgeWindow`** → **Try Activate Ability** **Perfect Dodge** (hoặc trigger tương đương).
-2. Nếu cần nhánh parry: kiểm tra **`State.ParryWindow`** → **Try Activate Ability** **Parry** (hoặc ability counter tương ứng).
+2. Nếu nhánh parry: kiểm tra **`State.ParryWindow`** → **Try Activate Ability** **Parry** (hoặc ability counter tương ứng).
 
 ### Enemy stun
 
-`Stun` tăng khi bị đánh; đủ ngưỡng → trạng thái stun (GE + tag hoặc ability).
+`Stun` tăng khi bị đánh; reaches threshold → stunned state (GE + tag hoặc ability).
 
 ### Sơ đồ sequence (mô tả)
 
@@ -163,7 +163,7 @@ sequenceDiagram
     Hit->>P: Activate Perfect Dodge ability
   else State.ParryWindow
     Hit->>P: Activate Parry ability
-  else Không có window
+  else Không có counter window
     Hit->>P: Apply GE damage
   end
 ```
@@ -176,7 +176,7 @@ sequenceDiagram
 |------------|------------|
 | Dùng **GAS** | Quản lý ability, buff/debuff, tag, replication thống nhất. |
 | Damage qua **Execution Calculation** | Tránh nhân đôi modifier; gom công thức combo + BaseDamage + Scale một chỗ. |
-| **BaseDamage** trên attribute, không truyền tay mỗi hit | Một nguồn sự thật cho damage gốc; buff/debuff qua GE. |
-| Cửa sổ phòng thủ bằng **GE + Granted Tag** | Dễ kiểm tra trong hit resolve; tách khỏi damage pipeline nếu cần. |
+| **BaseDamage** trên attribute, không truyền tay mỗi hit|
+| Counter window phòng thủ bằng **GE + Granted Tag** | Dễ kiểm tra trong hit resolve|
 
 ---

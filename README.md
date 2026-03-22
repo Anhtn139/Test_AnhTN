@@ -14,7 +14,7 @@ Dự án Unreal Engine 5.6 với hệ thống chiến đấu sử dụng Gamepla
 |------|-----------|
 | **W A S D** | Di chuyển |
 | **Space** | Nhảy |
-| **Left Shift** | Dodge ( né tránh ) |
-| **E** | Parry ( đỡ đòn ) |
-| **Q** | Khóa mục tiêu |
-| **O** | Mở pause menu |
+| **Left Shift** | Dodge |
+| **E** | Parry |
+| **Q** | Target lock |
+| **O** | Pause menu |
